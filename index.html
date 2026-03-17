@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بطاقة تهنئة العيد</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #29B5B5;
+            --primary-light: #00D4D4;
+            --dark-bg: #0A1F1F;
+            --darker-bg: #061414;
+            --gold: #D4AF37;
+            --text-light: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.7);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Cairo', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(180deg, var(--darker-bg) 0%, var(--dark-bg) 50%, #0D2828 100%);
+            color: var(--text-light);
+        }
+        .header {
+            text-align: center;
+            padding: 40px 20px 20px;
+        }
+        .header-logo {
+            height: 50px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        .header p {
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title span {
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            color: var(--darker-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .color-options {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .color-option {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .color-option:hover { transform: scale(1.1); }
+        .color-option.selected {
+            border-color: var(--text-light);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        .color-option.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .color-teal { background: linear-gradient(135deg, #0A2525, #1A4040); }
+        .color-navy { background: linear-gradient(135deg, #0A1628, #1A2D4A); }
+        .color-purple { background: linear-gradient(135deg, #1A0A28, #2D1A45); }
+        .color-maroon { background: linear-gradient(135deg, #280A0A, #451A1A); }
+        .color-gold { background: linear-gradient(135deg, #28200A, #453A1A); }
+        .color-black { background: linear-gradient(135deg, #0A0A0A, #1A1A1A); }
+        .input-group { margin-bottom: 15px; }
+        .input-group:last-child { margin-bottom: 0; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 14px 18px;
+            font-size: 16px;
+            font-family: 'Cairo', sans-serif;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .input-group input::placeholder { color: rgba(255, 255, 255, 0.3); }
+        .input-group input:focus {
+            border-color: var(--primary);
+            background: rgba(41, 181, 181, 0.08);
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn-generate {
+            width: 100%;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border: none;
+            border-radius: 12px;
+            color: var(--darker-bg);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(41, 181, 181, 0.4);
+        }
+        .btn-generate:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-content {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            margin: auto;
+        }
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        .card-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto 25px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+        }
+        #previewCanvas {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 16px;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-download {
+            background: linear-gradient(135deg, var(--gold), #E5C04B);
+            color: var(--darker-bg);
+        }
+        .btn-download:hover {
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.4);
+        }
+        .btn-close {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+        }
+        .btn-close:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .confetti-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1001;
+            overflow: hidden;
+        }
+        .confetti {
+            position: absolute;
+            top: -20px;
+            animation: confetti-fall 4s ease-out forwards;
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        #downloadCanvas { display: none; }
+        @media (max-width: 480px) {
+            .input-row { grid-template-columns: 1fr; }
+            .header h1 { font-size: 24px; }
+        }
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .loading-status {
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: var(--gold);
+        }
+    </style>
+</head>
+<body>
+    <div class="confetti-container" id="confetti"></div>
+
+    <header class="header">
+        <img src="logo.png" alt="Logo" class="header-logo" id="headerLogo">
+        <h1>✨ بطاقة تهنئة العيد</h1>
+        <p>أدخل اسمك واحصل على بطاقتك الخاصة</p>
+    </header>
+
+    <div class="container">
+        <div class="section">
+            <h2 class="section-title"><span>1</span> اختر لون البطاقة</h2>
+            <div class="color-options">
+                <div class="color-option color-teal selected" data-color="teal" onclick="selectColor('teal')"></div>
+                <div class="color-option color-navy" data-color="navy" onclick="selectColor('navy')"></div>
+                <div class="color-option color-purple" data-color="purple" onclick="selectColor('purple')"></div>
+                <div class="color-option color-maroon" data-color="maroon" onclick="selectColor('maroon')"></div>
+                <div class="color-option color-gold" data-color="gold" onclick="selectColor('gold')"></div>
+                <div class="color-option color-black" data-color="black" onclick="selectColor('black')"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><span>2</span> أدخل بياناتك</h2>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>الاسم بالعربي *</label>
+                    <input type="text" id="nameAr" placeholder="محمد أحمد" required>
+                </div>
+                <div class="input-group">
+                    <label>الاسم بالإنجليزي</label>
+                    <input type="text" id="nameEn" placeholder="Mohammed Ahmed" dir="ltr">
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-generate" id="generateBtn" onclick="generateCard()">
+            إنشاء البطاقة ✨
+        </button>
+        <div class="loading-status" id="loadingStatus"></div>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h2 class="modal-title">🎉 بطاقتك جاهزة!</h2>
+            <div class="card-wrapper">
+                <canvas id="previewCanvas"></canvas>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-close" onclick="closeModal()">إغلاق</button>
+                <button class="btn btn-download" onclick="downloadCard()">📥 تحميل</button>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="downloadCanvas"></canvas>
+
+    <footer class="footer">
+        <p>كل عام وأنتم بخير 🌙</p>
+    </footer>
+
+    <script>
+        let selectedColor = 'teal';
+        let logoImg = null;
+        let patternImg = null;
+        let greetingImg = null;
+
+        function loadImage(src) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = () => resolve(null);
+                img.src = src + '?v=' + Date.now();
+            });
+        }
+
+        async function loadAllImages() {
+            document.getElementById('loadingStatus').textContent = 'جاري تحميل الملفات...';
+            document.getElementById('generateBtn').disabled = true;
+
+            const [logo, pattern, greeting] = await Promise.all([
+                loadImage('logo.png'),
+                loadImage('pattern.png'),
+                loadImage('greeting.svg')
+            ]);
+
+            logoImg = logo;
+            patternImg = pattern;
+            greetingImg = greeting;
+
+            document.getElementById('loadingStatus').textContent = '';
+            document.getElementById('generateBtn').disabled = false;
+        }
+
+        const colorSchemes = {
+            teal: { colors: ['#061414', '#0A2525', '#1A4040'], accent: '#29B5B5', bokeh: ['#29B5B5', '#00D4D4', '#D4AF37', '#1A6060'] },
+            navy: { colors: ['#050A14', '#0A1628', '#1A2D4A'], accent: '#4A90D4', bokeh: ['#4A90D4', '#6BB3F0', '#D4AF37', '#2A4A6A'] },
+            purple: { colors: ['#0A0514', '#1A0A28', '#2D1A45'], accent: '#9B59B6', bokeh: ['#9B59B6', '#C39BD3', '#D4AF37', '#5D3A6A'] },
+            maroon: { colors: ['#140505', '#280A0A', '#451A1A'], accent: '#C0392B', bokeh: ['#C0392B', '#E57373', '#D4AF37', '#6A2A2A'] },
+            gold: { colors: ['#0A0A05', '#1A1505', '#2D2510'], accent: '#D4AF37', bokeh: ['#D4AF37', '#F4D03F', '#FFFFFF', '#8A7A3A'] },
+            black: { colors: ['#000000', '#0A0A0A', '#1A1A1A'], accent: '#FFFFFF', bokeh: ['#FFFFFF', '#888888', '#D4AF37', '#444444'] }
+        };
+
+        function selectColor(color) {
+            selectedColor = color;
+            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+            document.querySelector(`[data-color="${color}"]`).classList.add('selected');
+        }
+
+        function drawCard(canvas, scale = 1) {
+            const ctx = canvas.getContext('2d');
+            const width = 1080 * scale;
+            const height = 1920 * scale;
+            canvas.width = width;
+            canvas.height = height;
+
+            const scheme = colorSchemes[selectedColor];
+            const nameAr = document.getElementById('nameAr').value.trim();
+            const nameEn = document.getElementById('nameEn').value.trim();
+
+            // 1. الخلفية
+            const gradient = ctx.createLinearGradient(0, 0, 0, height);
+            gradient.addColorStop(0, scheme.colors[0]);
+            gradient.addColorStop(0.4, scheme.colors[1]);
+            gradient.addColorStop(1, scheme.colors[2]);
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+
+            // 2. الباترن
+            if (patternImg) {
+                ctx.globalAlpha = 0.1;
+                ctx.drawImage(patternImg, 0, 0, width, height);
+                ctx.globalAlpha = 1;
+            }
+
+            // 3. البوكيه
+            const bokehs = [
+                { x: width * 0.85, y: height * 0.12, r: 180 * scale, color: scheme.bokeh[0], alpha: 0.35 },
+                { x: width * 0.1, y: height * 0.35, r: 140 * scale, color: scheme.bokeh[1], alpha: 0.3 },
+                { x: width * 0.9, y: height * 0.75, r: 200 * scale, color: scheme.bokeh[2], alpha: 0.25 },
+                { x: width * 0.15, y: height * 0.65, r: 120 * scale, color: scheme.bokeh[3], alpha: 0.2 },
+                { x: width * 0.5, y: height * 0.9, r: 160 * scale, color: scheme.bokeh[0], alpha: 0.15 },
+            ];
+            bokehs.forEach(b => {
+                ctx.beginPath();
+                const grd = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+                grd.addColorStop(0, b.color);
+                grd.addColorStop(1, 'transparent');
+                ctx.fillStyle = grd;
+                ctx.globalAlpha = b.alpha;
+                ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.globalAlpha = 1;
+
+            // ===== الترتيب الصحيح =====
+
+            // 4. الشعار (أعلى البطاقة)
+            if (logoImg) {
+                const logoMaxHeight = 80 * scale;
+                const logoRatio = logoImg.width / logoImg.height;
+                const logoHeight = logoMaxHeight;
+                const logoWidth = logoHeight * logoRatio;
+                ctx.drawImage(logoImg, (width - logoWidth) / 2, height * 0.06, logoWidth, logoHeight);
+            }
+
+            // 5. التهنئة - greeting.svg (في الوسط)
+            if (greetingImg) {
+                const greetingMaxWidth = width * 0.70;
+                const greetingRatio = greetingImg.width / greetingImg.height;
+                const greetingWidth = greetingMaxWidth;
+                const greetingHeight = greetingWidth / greetingRatio;
+                const greetingY = height * 0.20;
+                ctx.drawImage(greetingImg, (width - greetingWidth) / 2, greetingY, greetingWidth, greetingHeight);
+            }
+
+            // 6. الخط الفاصل الذهبي
+            const lineWidth = 120 * scale;
+            const lineY = height * 0.68;
+            const lineGrad = ctx.createLinearGradient(width/2 - lineWidth/2, 0, width/2 + lineWidth/2, 0);
+            lineGrad.addColorStop(0, 'transparent');
+            lineGrad.addColorStop(0.5, '#D4AF37');
+            lineGrad.addColorStop(1, 'transparent');
+            ctx.fillStyle = lineGrad;
+            ctx.fillRect(width/2 - lineWidth/2, lineY, lineWidth, 3 * scale);
+
+            // 7. الاسم بالعربي
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            const nameSize = 44 * scale;
+            ctx.font = `700 ${nameSize}px Cairo, Arial`;
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = 'rgba(0,0,0,0.4)';
+            ctx.shadowBlur = 15 * scale;
+            ctx.fillText(nameAr, width / 2, height * 0.74);
+            ctx.shadowBlur = 0;
+
+            // 8. الاسم بالإنجليزي
+            if (nameEn) {
+                ctx.font = `400 ${nameSize}px Cairo, Arial`;
+                ctx.fillStyle = 'rgba(255,255,255,0.7)';
+                ctx.fillText(nameEn, width / 2, height * 0.80);
+            }
+        }
+
+        function generateCard() {
+            const nameAr = document.getElementById('nameAr').value.trim();
+            if (!nameAr) {
+                const input = document.getElementById('nameAr');
+                input.style.borderColor = '#E74C3C';
+                input.placeholder = 'الرجاء إدخال اسمك';
+                setTimeout(() => {
+                    input.style.borderColor = 'rgba(255,255,255,0.1)';
+                    input.placeholder = 'محمد أحمد';
+                }, 2000);
+                return;
+            }
+
+            drawCard(document.getElementById('previewCanvas'), 0.35);
+            document.getElementById('modal').classList.add('active');
+            createConfetti();
+        }
+
+        function downloadCard() {
+            const nameAr = document.getElementById('nameAr').value.trim();
+            const canvas = document.getElementById('downloadCanvas');
+            drawCard(canvas, 1);
+
+            const link = document.createElement('a');
+            link.download = `eid-card-${nameAr}.png`;
+            link.href = canvas.toDataURL('image/png', 1.0);
+            link.click();
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        function createConfetti() {
+            const container = document.getElementById('confetti');
+            container.innerHTML = '';
+            const colors = ['#29B5B5', '#D4AF37', '#00D4D4', '#ffffff', '#FFD700', '#9B59B6'];
+            for (let i = 0; i < 80; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti';
+                c.style.left = Math.random() * 100 + '%';
+                c.style.background = colors[Math.floor(Math.random() * colors.length)];
+                c.style.animationDelay = Math.random() * 2 + 's';
+                c.style.width = Math.random() * 12 + 5 + 'px';
+                c.style.height = c.style.width;
+                c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                container.appendChild(c);
+            }
+            setTimeout(() => container.innerHTML = '', 5000);
+        }
+
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        loadAllImages();
+    </script>
+</body>
+</html>
